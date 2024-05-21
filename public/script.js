@@ -5,7 +5,7 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
     formData.append('pdfFile', fileField.files[0]);
 
     try {
-        const response = await fetch('/upload', {
+        const response = await fetch('/api/upload', {
             method: 'POST',
             body: formData
         });

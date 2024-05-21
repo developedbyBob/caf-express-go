@@ -5,17 +5,11 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: '/tmp' }); // Alterado para /tmp para funcionar no Vercel
 
-// Serve arquivos estáticos da pasta 'public'
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Rota para verificar o status do servidor
-app.get('/status', (req, res) => {
-    res.status(200).send('Server is running');
-});
-
-app.post('/upload', upload.single('pdfFile'), async (req, res) => {
+app.post('/api/upload', upload.single('pdfFile'), async (req, res) => {
     try {
         const dataBuffer = fs.readFileSync(req.file.path);
         const data = await pdf(dataBuffer);
@@ -48,7 +42,4 @@ app.post('/upload', upload.single('pdfFile'), async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+module.exports = app;
