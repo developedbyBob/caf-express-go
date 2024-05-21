@@ -26,17 +26,3 @@ document.getElementById('uploadForm').addEventListener('submit', async function(
         document.getElementById('result').innerText = 'An error occurred while processing the PDF.';
     }
 });
-
-// Verificar se o servidor está acessível
-(async function checkServerStatus() {
-    try {
-        const response = await fetch('/status'); // Supondo que você tenha uma rota `/status` no servidor
-        if (response.ok) {
-            console.log('O servidor está acessível.');
-        } else {
-            console.log('O servidor respondeu, mas ocorreu um problema:', response.status);
-        }
-    } catch (error) {
-        console.error('Não foi possível acessar o servidor:', error);
-    }
-})();
