@@ -1,0 +1,22 @@
+<!-- /public/index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Upload and Process</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Carregar PDF para Cálculo de Entrega</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+        <button type="submit">Carregar e Calcular</button>
+    </form>
+    <div id="result"></div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
