@@ -1,4 +1,3 @@
-// /server.js
 const express = require('express');
 const multer = require('multer');
 const pdf = require('pdf-parse');
@@ -10,6 +9,11 @@ const upload = multer({ dest: 'uploads/' });
 
 // Serve arquivos estáticos da pasta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Rota para verificar o status do servidor
+app.get('/status', (req, res) => {
+    res.status(200).send('Server is running');
+});
 
 app.post('/upload', upload.single('pdfFile'), async (req, res) => {
     try {
@@ -43,7 +47,6 @@ app.post('/upload', upload.single('pdfFile'), async (req, res) => {
         });
     }
 });
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
