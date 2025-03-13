@@ -1,45 +1,44 @@
 const express = require('express');
-const multer = require('multer');
-const pdf = require('pdf-parse');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
+const pdfRoutes = require('./routes/pdfRoutes');
 
 const app = express();
-const upload = multer({ dest: '/tmp' }); // Alterado para /tmp para funcionar no Vercel
+const PORT = process.env.PORT || 3000;
 
+// Garantir que o diretório de uploads exista
+const uploadsDir = path.join(process.cwd(), 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Middleware para logs simples
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
+// Configuração para servir arquivos estáticos
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.post('/api/upload', upload.single('pdfFile'), async (req, res) => {
-    try {
-        const dataBuffer = fs.readFileSync(req.file.path);
-        const data = await pdf(dataBuffer);
+// Rotas da API
+app.use('/api', pdfRoutes);
 
-        const lines = data.text.split('\n');
-        let total = 0;
-        let weights = [];
-
-        for (const line of lines) {
-            const match = line.match(/tx([\d.,]+)/);
-            if (match) {
-                const weight = parseFloat(match[1].replace(',', '.'));
-                weights.push(weight);
-                if (weight > 0.3) {
-                    total += 3;
-                } else {
-                    total += 2;
-                }
-            }
-        }
-
-        res.json({ total, weights });
-    } catch (error) {
-        console.error('Erro ao processar o arquivo', error);
-        res.status(500).json({ error: 'Erro ao processar o arquivo' });
-    } finally {
-        fs.unlink(req.file.path, (err) => {
-            if (err) console.error(`Erro ao deletar o arquivo: ${err}`);
-        });
-    }
+// Manipulação de erros
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        error: err.message || 'Ocorreu um erro no servidor'
+    });
 });
+
+// Iniciar o servidor se esse arquivo for executado diretamente
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+        console.log(`Acesse: http://localhost:${PORT}`);
+    });
+}
 
 module.exports = app;

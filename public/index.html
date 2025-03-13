@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAF Express - Calculadora de Entregas</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preconnect para melhorar performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="logo">
+                <i class="fas fa-truck-fast"></i>
+                <h1>CAF Express</h1>
+            </div>
+        </header>
+
+        <main class="app-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Calculadora de Custo de Entrega</h2>
+                    <p class="subtitle">Faça upload do PDF para calcular os custos de entrega</p>
+                </div>
+                
+                <div class="card-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="file-upload-container">
+                            <div class="file-upload-area" id="dropArea">
+                                <i class="fas fa-file-pdf file-icon"></i>
+                                <p>Arraste o PDF aqui ou clique para selecionar</p>
+                                <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+                            </div>
+                            <div id="fileName" class="file-name"></div>
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-calculator"></i> Calcular Custos
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card results-card" id="resultsCard" style="display: none;">
+                <div class="card-header">
+                    <h2>Resultado da Análise</h2>
+                </div>
+                <div class="card-body">
+                    <div class="result-summary">
+                        <div class="result-item">
+                            <div class="result-label">Total de Itens</div>
+                            <div class="result-value" id="itemCount">-</div>
+                        </div>
+                        <div class="result-item highlight">
+                            <div class="result-label">Custo Total</div>
+                            <div class="result-value" id="totalCost">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>Detalhes do Cálculo</h3>
+                        <div class="table-responsive">
+                            <table id="detailsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Peso (kg)</th>
+                                        <th>Custo (R$)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Será preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="loadingOverlay" class="loading-overlay">
+                <div class="spinner"></div>
+                <p>Processando PDF...</p>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2024 CAF Express - Calculadora de Entregas</p>
+        </footer>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
