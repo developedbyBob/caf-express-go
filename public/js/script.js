@@ -1,3 +1,4 @@
+// public/js/script.js
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos DOM
     const uploadForm = document.getElementById('uploadForm');
@@ -101,13 +102,21 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('pdfFile', pdfFileInput.files[0]);
 
         try {
+            // Adicionar timeout mais longo para o fetch (30 segundos)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000);
+            
             const response = await fetch('/api/upload', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
 
             if (!response.ok) {
-                throw new Error('Falha na resposta da rede');
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Erro do servidor: ${response.status}`);
             }
 
             const result = await response.json();

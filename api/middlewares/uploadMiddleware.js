@@ -1,17 +1,15 @@
+// api/middlewares/uploadMiddleware.js
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const os = require('os');
 
-// Criar diretório de uploads se não existir
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
+// Determinar o diretório de upload com base no ambiente
+const uploadDir = process.env.VERCEL ? os.tmpdir() : path.join(process.cwd(), 'uploads');
 
 // Configuração do multer para upload de arquivos
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, uploadDir); // Usar pasta uploads no diretório do projeto
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
         // Criar nome de arquivo único com timestamp
