@@ -13,19 +13,23 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/server.js"
+      "dest": "api/server.js"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "public/favicon.ico"
     },
     {
       "src": "/(assets|css|js)/(.*)",
-      "dest": "/public/$1/$2"
+      "dest": "public/$1/$2"
     },
     {
       "src": "/(.*\\.(ico|png|jpg|jpeg|svg|webp|css|js|woff|woff2|ttf|otf))",
-      "dest": "/public/$1"
+      "dest": "public/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "public/index.html"
     }
   ]
 }

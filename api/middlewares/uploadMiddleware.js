@@ -1,22 +1,23 @@
-// api/middlewares/uploadMiddleware.js
 const multer = require('multer');
 const path = require('path');
 const os = require('os');
 
-// Determinar o diretório de upload com base no ambiente
-const uploadDir = process.env.VERCEL ? os.tmpdir() : path.join(process.cwd(), 'uploads');
-
-// Configuração do multer para upload de arquivos
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-        // Criar nome de arquivo único com timestamp
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
+// Em ambiente serverless como Vercel, sempre use memoryStorage
+// Isso evita problemas de permissão com o sistema de arquivos
+const storage = process.env.VERCEL 
+    ? multer.memoryStorage()
+    : multer.diskStorage({
+        destination: function (req, file, cb) {
+            // Em ambiente local, usar a pasta 'uploads'
+            const uploadDir = path.join(process.cwd(), 'uploads');
+            // Não tentamos criar o diretório aqui - isso é feito no server.js
+            cb(null, uploadDir);
+        },
+        filename: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        }
+    });
 
 // Filtro para aceitar apenas arquivos PDF
 const fileFilter = (req, file, cb) => {

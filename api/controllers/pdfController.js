@@ -1,4 +1,3 @@
-// api/controllers/pdfController.js
 const fs = require('fs');
 const pdfService = require('../services/pdfService');
 
@@ -19,23 +18,32 @@ const pdfController = {
         }
 
         try {
-            console.log(`Arquivo recebido: ${req.file.originalname}, salvo em ${req.file.path}`);
+            console.log(`Arquivo recebido: ${req.file.originalname}`);
             
-            // Verificar se o arquivo existe e tem tamanho
-            const fileStats = fs.statSync(req.file.path);
+            let dataBuffer;
             
-            if (fileStats.size === 0) {
-                throw new Error('Arquivo PDF vazio');
+            // Verificar se estamos no Vercel (usando memoryStorage)
+            if (process.env.VERCEL) {
+                console.log('Ambiente Vercel detectado, usando buffer da memória');
+                // No Vercel, o arquivo estará disponível como buffer em req.file.buffer
+                dataBuffer = req.file.buffer;
+            } else {
+                // Em ambiente local, o arquivo está salvo no disco
+                console.log(`Arquivo salvo em ${req.file.path}`);
+                // Verificar se o arquivo existe no disco
+                if (!fs.existsSync(req.file.path)) {
+                    throw new Error(`Arquivo não encontrado no caminho: ${req.file.path}`);
+                }
+                
+                // Ler o arquivo do disco
+                dataBuffer = fs.readFileSync(req.file.path);
             }
-            
-            // Ler o arquivo PDF
-            const dataBuffer = fs.readFileSync(req.file.path);
             
             if (!dataBuffer || dataBuffer.length === 0) {
-                throw new Error('Não foi possível ler o conteúdo do arquivo');
+                throw new Error('Buffer de arquivo vazio');
             }
             
-            console.log(`Arquivo lido com sucesso, tamanho: ${dataBuffer.length} bytes`);
+            console.log(`Buffer de arquivo obtido, tamanho: ${dataBuffer.length} bytes`);
             
             // Processar o PDF e calcular os custos
             const result = await pdfService.processPdf(dataBuffer);
@@ -46,20 +54,24 @@ const pdfController = {
                 ...result
             });
         } catch (error) {
-            console.error('Erro ao processar o arquivo', error);
+            console.error('Erro ao processar o arquivo:', error);
             res.status(500).json({ 
                 success: false,
-                error: `Erro ao processar o arquivo: ${error.message}` 
+                error: `Erro ao processar o arquivo: ${error.message}`,
+                stack: process.env.NODE_ENV === 'production' ? undefined : error.stack
             });
         } finally {
-            // Tentar remover o arquivo temporário se ele existir
-            try {
-                if (req.file && req.file.path && fs.existsSync(req.file.path)) {
-                    fs.unlinkSync(req.file.path);
-                    console.log(`Arquivo temporário removido: ${req.file.path}`);
+            // Remover o arquivo temporário apenas se estiver em ambiente local
+            // e se o arquivo existir no sistema de arquivos
+            if (!process.env.VERCEL && req.file && req.file.path) {
+                try {
+                    if (fs.existsSync(req.file.path)) {
+                        fs.unlinkSync(req.file.path);
+                        console.log(`Arquivo temporário removido: ${req.file.path}`);
+                    }
+                } catch (err) {
+                    console.error(`Erro ao deletar o arquivo temporário: ${err.message}`);
                 }
-            } catch (err) {
-                console.error(`Erro ao deletar o arquivo temporário: ${err.message}`);
             }
         }
     }

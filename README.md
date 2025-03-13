@@ -29,7 +29,7 @@ Esta aplicação web permite fazer o upload de arquivos PDF para calcular os cus
 
 ## Demonstração
 
-![Screenshot da aplicação](https://via.placeholder.com/800x400)
+![Screenshot da aplicação](public/assets/caf-express.png)
 
 ## Estrutura do Projeto
 

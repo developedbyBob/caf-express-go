@@ -1,23 +1,22 @@
-// api/server.js
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const os = require('os');
 const pdfRoutes = require('./routes/pdfRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Determinar o diretório de uploads com base no ambiente
-const uploadsDir = process.env.VERCEL ? os.tmpdir() : path.join(process.cwd(), 'uploads');
-
-// Garantir que o diretório de uploads exista (somente em desenvolvimento)
-if (!process.env.VERCEL && !fs.existsSync(uploadsDir)) {
+// Criar diretório de uploads apenas em ambiente local (não no Vercel)
+if (!process.env.VERCEL) {
     try {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-        console.log(`Diretório de uploads criado: ${uploadsDir}`);
+        const uploadsDir = path.join(process.cwd(), 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir, { recursive: true });
+            console.log(`Diretório de uploads criado: ${uploadsDir}`);
+        }
     } catch (err) {
-        console.error(`Erro ao criar diretório de uploads: ${err.message}`);
+        console.error(`Aviso: Não foi possível criar diretório de uploads: ${err.message}`);
+        // Continuar mesmo se não conseguir criar o diretório
     }
 }
 
@@ -51,7 +50,7 @@ app.get('*', (req, res) => {
 
 // Manipulação de erros
 app.use((err, req, res, next) => {
-    console.error('Erro não tratado:', err.stack);
+    console.error('Erro não tratado:', err);
     res.status(500).json({
         success: false,
         error: process.env.NODE_ENV === 'production' 
@@ -65,7 +64,7 @@ if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`Servidor rodando na porta ${PORT}`);
         console.log(`Ambiente: ${process.env.NODE_ENV || 'desenvolvimento'}`);
-        console.log(`Diretório de uploads: ${uploadsDir}`);
+        console.log(`Ambiente Vercel: ${process.env.VERCEL ? 'Sim' : 'Não'}`);
         console.log(`Acesse: http://localhost:${PORT}`);
     });
 }
