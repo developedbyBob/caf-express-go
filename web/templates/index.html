@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAF Express</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CAF Express</h1>
+            <p>Cálculo de custos de entrega baseado em PDF</p>
+        </header>
+        
+        <main>
+            <div class="upload-section">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-input-container">
+                        <label for="pdfFile" class="file-label">Escolher arquivo PDF</label>
+                        <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required>
+                        <span id="fileName">Nenhum arquivo selecionado</span>
+                    </div>
+                    <button type="submit" class="submit-btn">Carregar e Calcular</button>
+                </form>
+            </div>
+            
+            <div class="result-section">
+                <div id="loadingIndicator" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Processando arquivo...</p>
+                </div>
+                <div id="result" class="result"></div>
+                <div id="weightsList" class="weights-list hidden">
+                    <h3>Detalhes dos pesos:</h3>
+                    <ul id="weightsDetail"></ul>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 CAF Express - Todos os direitos reservados</p>
+        </footer>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
