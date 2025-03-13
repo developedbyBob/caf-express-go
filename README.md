@@ -1,58 +1,135 @@
-PDF Upload and Process (CAF EXPRESS)
-======================
+# CAF Express - Calculadora de Entregas
 
-Este é um projeto simples que permite fazer o upload de arquivos PDF para calcular os custos de entrega com base nos pesos dos itens no PDF.
+## Sobre o Projeto
 
-Funcionalidades
----------------
+Esta aplicação web permite fazer o upload de arquivos PDF para calcular os custos de entrega com base nos pesos dos itens extraídos do PDF. A interface é totalmente responsiva e funciona tanto em desktops quanto em dispositivos móveis.
 
--   Faça o upload de um arquivo PDF contendo informações de entrega.
--   Calcule os custos de entrega com base nos pesos dos itens no PDF.
--   Exiba o total dos custos de entrega.
+## Funcionalidades
 
-Como Usar
----------
+- Interface responsiva para desktop e mobile
+- Upload de arquivos PDF via drag & drop ou seleção de arquivo
+- Extração de informações de peso dos documentos PDF
+- Cálculo automático dos custos de entrega baseados no peso
+- Exibição detalhada dos itens e seus respectivos custos
+- Validação de arquivos (apenas PDFs são aceitos)
 
-1.  Clone este repositório para o seu ambiente local.
+## Tecnologias Utilizadas
 
-2.  Certifique-se de ter o Node.js instalado em sua máquina.
+- **Backend:**
+  - Node.js
+  - Express.js
+  - Multer (para upload de arquivos)
+  - pdf-parse (para extração de conteúdo dos PDFs)
 
-3.  Instale as dependências do projeto executando o seguinte comando no terminal:
+- **Frontend:**
+  - HTML5
+  - CSS3 (design responsivo)
+  - JavaScript (ES6+)
+  - Font Awesome (ícones)
 
-    Copiar código
+## Demonstração
 
-    `npm install`
+![Screenshot da aplicação](https://via.placeholder.com/800x400)
 
-4.  Inicie o servidor local executando o seguinte comando:
+## Estrutura do Projeto
 
-    Copiar código
+```
+📁 projeto-pdf-caf
+├── 📁 api
+│   ├── 📁 controllers
+│   │   └── pdfController.js
+│   ├── 📁 middlewares
+│   │   └── uploadMiddleware.js
+│   ├── 📁 routes
+│   │   └── pdfRoutes.js
+│   ├── 📁 services
+│   │   └── pdfService.js
+│   └── server.js
+├── 📁 public
+│   ├── 📁 css
+│   │   └── style.css
+│   ├── 📁 js
+│   │   └── script.js
+│   ├── 📁 assets
+│   │   └── img.jpg
+│   └── index.html
+├── .gitignore
+├── package.json
+├── README.md
+└── vercel.json
+```
 
-    `node server.js`
+## Como Usar
 
-5.  Abra o navegador e acesse `http://localhost:3000` para visualizar a página de upload de PDF.
+### Pré-requisitos
 
-6.  Selecione um arquivo PDF contendo as informações de entrega e clique no botão "Upload and Calculate".
+- Node.js (versão 14 ou superior)
+- npm ou yarn
 
-7.  Aguarde até que os custos de entrega sejam calculados e exibidos na página.
+### Instalação
 
-Estrutura do Projeto
---------------------
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/seu-usuario/caf-express.git
+   cd caf-express
+   ```
 
--   `server.js`: Arquivo que contém o código do servidor Node.js.
--   `public/`: Pasta contendo os arquivos estáticos do frontend (HTML, CSS, JavaScript).
--   `uploads/`: Pasta onde os arquivos PDF enviados pelos usuários são armazenados temporariamente.
--   `.gitignore`: Arquivo que especifica quais arquivos e pastas devem ser ignorados pelo Git.
--   `package.json` e `package-lock.json`: Arquivos de manifesto do Node.js que especificam as dependências do projeto.
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
 
-Tecnologias Utilizadas
-----------------------
+3. Inicie a aplicação em modo de desenvolvimento:
+   ```bash
+   npm run dev
+   ```
 
--   Node.js
--   Express.js
--   Multer (para upload de arquivos)
--   pdf-parse (para análise de arquivos PDF)
+4. Acesse a aplicação em seu navegador:
+   ```
+   http://localhost:3000
+   ```
 
-Contribuindo
-------------
+## Deploy
 
-Se você quiser contribuir com este projeto, sinta-se à vontade para abrir uma issue ou enviar um pull request.
+A aplicação está configurada para deploy na plataforma Vercel, utilizando as configurações presentes no arquivo `vercel.json`.
+
+### Como fazer o deploy:
+
+1. Instale o CLI da Vercel:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Faça login na sua conta Vercel:
+   ```bash
+   vercel login
+   ```
+
+3. Deploy da aplicação:
+   ```bash
+   vercel
+   ```
+
+## Fluxo de Funcionamento
+
+1. O usuário carrega um arquivo PDF através da interface da aplicação
+2. O backend processa o arquivo utilizando pdf-parse para extrair o texto
+3. O sistema identifica padrões de peso nos textos (formato "tx0.42" por exemplo)
+4. Os custos são calculados com base nos pesos detectados:
+   - Itens com peso maior que 0.3kg: R$3,00 por item
+   - Itens com peso até 0.3kg: R$2,00 por item
+5. Os resultados são exibidos de forma organizada na interface
+
+## Contribuindo
+
+Contribuições são bem-vindas! Para contribuir:
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto está licenciado sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
